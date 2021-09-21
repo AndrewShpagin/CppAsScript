@@ -6,7 +6,7 @@ Currently it works for Windows, but it will be crossplatform in future).
 You need to execute external scripts using your program API at the native c++ speed. Now it is possible! Declare the API, create scripе example as cpp file, use thes project to complile that cpp and execute at runtime.
 
 ## Pre-requisites
-You need to install LLVM clang (it is relatively lightweight), not later that 12.0.1<br>
+You need to install LLVM clang (it is relatively lightweight), not later than 12.0.1<br>
 https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.1 <br>
 
 Fow example, for Windows it is inly 186 MB:<br>
