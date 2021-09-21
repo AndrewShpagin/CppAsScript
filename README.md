@@ -1,5 +1,6 @@
 # CppAsScript
 Using the compilable c++ as script, compiled at runtime using the clang-cl
+Currently it works for Windows, but it will be crossplatform in future)
 
 ## The problem it solves
 You need to execute external scripts using your program API at the native c++ speed. Now it is possible! Declare the API, create scrip example as cpp file, use thes project to complile that cpp and execute at runtime.
