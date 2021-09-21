@@ -7,6 +7,6 @@ set(CMAKE_CXX_STANDARD 17)
 project ("CppAsScript")
 
 # Add source to this project's executable.
-add_executable (CppAsScript "CppAsScript.cpp" "CppAsScript.h" "maker/_win.cpp" "maker/CLangScripter.cpp" "api_test/export.cpp")
+add_executable (CppAsScript "CppAsScript.cpp" "maker/_win.cpp" "maker/CLangScripter.cpp" "api_test/export.cpp")
 
 # TODO: Add tests and install targets if needed.
