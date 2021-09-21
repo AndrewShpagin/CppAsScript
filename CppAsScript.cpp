@@ -1,5 +1,4 @@
-﻿// CppAsScript.cpp : Defines the entry point for the application.
-//
+// The example of the compiler usage
 
 #include "maker/CLangScripter.h"
 #include <filesystem>
