@@ -22,7 +22,7 @@ public:
 	void testfn(const char* x);
 };
 ```
-3. Now make some example that uses this API. Look [test/test.cpp](test/test.cpp) as the exapmple. This file contains functions to be executed.
+3. Now make some example that uses this API. Look [test/test.cpp](test/test.cpp) as the example. This file contains functions to be executed.
 4. Use the **CLangProject** to execute functions. You need to pass the path to include files folder that contains the API reference header.
 ```cpp
 CLangProject PR;
