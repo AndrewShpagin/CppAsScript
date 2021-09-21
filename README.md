@@ -1,18 +1,16 @@
 # CppAsScript
-Using the compilable c++ as script, compiled at runtime using the clang-cl
-Currently it works for Windows, but it will be crossplatform in future)
+Using the compilable c++ as script, compiled at runtime using the clang-cl.<br>
+Currently it works for Windows, but it will be crossplatform in future).
 
 ## The problem it solves
 You need to execute external scripts using your program API at the native c++ speed. Now it is possible! Declare the API, create scrip example as cpp file, use thes project to complile that cpp and execute at runtime.
 
 ## Pre-requisites
-You need to install LLVM clang (it is relatively lightweight), not later that 12.0.1
+You need to install LLVM clang (it is relatively lightweight), not later that 12.0.1<br>
+https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.1 <br>
 
-https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.1
-
-Fow example, for Windows it is inly 186 MB:
-
-https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.1/LLVM-12.0.1-win64.exe
+Fow example, for Windows it is inly 186 MB:<br>
+https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.1/LLVM-12.0.1-win64.exe <br>
 
 ## Using
 1. Include the files from the **maker** folder to your project.
