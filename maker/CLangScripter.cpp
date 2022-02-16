@@ -104,6 +104,15 @@ CLangProject& CLangProject::release() {
 	return *this;
 }
 
+std::string CLangProject::checkIfCompilerInstalled() {
+	if(builder) {
+		if(!builder->valid()) {
+			return builder->downloadPath();			
+		}
+	}
+	return "";
+}
+
 void CLangProject::recompileIfNeed() {
 	if(builder) {
 		builder->compile(*this);

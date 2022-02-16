@@ -1,5 +1,6 @@
 #include "CLangScripter.h"
 #include <Windows.h>
+#include <shlobj_core.h>
 #include "md5.h"
 #include <filesystem>
 
@@ -137,7 +138,10 @@ class CLangBuilderWin : public CLangBuilder {
 	std::string tempPath;
 public:
 	CLangBuilderWin() {
-		std::filesystem::path p = "C:/Program Files/LLVM/bin/clang-cl.exe";
+		WCHAR pf[MAX_PATH];
+		SHGetSpecialFolderPathW(0, pf, CSIDL_PROGRAM_FILES, FALSE);
+		std::filesystem::path p = pf;
+		p.append("LLVM/bin/clang-cl.exe");
 		if (exists(p)) {
 			clangPath = p.string();
 		}
@@ -190,6 +194,14 @@ public:
 		std::filesystem::path p = tempPath;
 		p.append(relative);
 		return p.string();
+	}
+
+	virtual std::string downloadPath() {
+		return "https://github.com/llvm/llvm-project/releases/download/llvmorg-13.0.1/LLVM-13.0.1-win64.exe";		
+	}
+
+	virtual bool valid() {
+		return clangPath.length() > 0;
 	}
 };
 
