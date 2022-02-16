@@ -28,6 +28,11 @@ public:
 4. Use the **CLangProject** to execute functions. You need to pass the path to include files folder that contains the API reference header.
 ```cpp
 CLangProject PR;
+std::string download = PR.checkIfCompilerInstalled();
+if(download.length()) {
+	std::cout << "LLVM-CL not installed, please download and install at:\n" << download << "\n";
+	return 1;
+}
 /// the path to project, we walk up because thet exe placed somehere deeply
 std::filesystem::path cur = std::filesystem::current_path().parent_path().parent_path().parent_path();
 
