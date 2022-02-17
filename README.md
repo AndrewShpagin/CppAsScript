@@ -6,7 +6,9 @@ Currently it works for Windows, but it will be crossplatform in future).
 You need to execute external scripts using your program API at the native c++ speed. Now it is possible! Declare the API, create script example as cpp file, use this project to complile that cpp and execute at runtime. It allows to create platform-independent plugins that are amost independent on API changes instead of old DLL-s method. It opens the possibility to users of the main program to create really fast and time-critical extensions. 
 
 ## Advantages
-The main goal is "super easy to use" + be able to setup and use all this on user's side, allow user to debug what he created. All what user needs to do - download and install LLVM using the provided link with all default settings. No additional setup required. And, generally LLVM download/setup may be done in automated way during the main program installation. In addition, LLVM-CL has very permissive license and you may just include it into the distributive of your package. This is a huge advantage over the Visual Studio.
+- The main goal is **"super easy to use"** + be able to setup and use all this on user's side, allow user to debug what he created. All what user needs to do - download and install LLVM using the provided link with all default settings. No additional setup required. And, generally LLVM download/setup may be done in automated way during the main program installation. In addition, **LLVM-CL has very permissive license** and you may just include it into the distributive of your package. This is a huge advantage over the Visual Studio.
+- The real-time compiled sources may be **debugged** if need.
+- **Very easy API creation**, you may export whole class with just a single directive. This is much more easy than API creation for any usiual scripting language. No need to call any registration functions.
 
 ## Pre-requisites
 You need to install LLVM clang (it is relatively lightweight), not later than 12.0.1<br>
