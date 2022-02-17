@@ -5,7 +5,7 @@ Currently it works for Windows, but it will be crossplatform in future).
 ## The problem it solves
 You need to execute external scripts using your program API at the native c++ speed. Now it is possible! Declare the API, create script example as cpp file, use this project to complile that cpp and execute at runtime. It allows to create platform-independent plugins that are amost independent on API changes instead of old DLL-s method. It opens the possibility to users of the main program to create really fast and time-critical extensions. 
 
-## Why not use existing solutions like "Runtime-Compiled C++"?
+## Advantages
 The main goal is "super easy to use" + be able to setup and use all this on user's side, allow user to debug what he created. All what user needs to do - download and install LLVM using the provided link with all default settings. No additional setup required. And, generally LLVM download/setup may be done in automated way during the main program installation. In addition, LLVM-CL has very permissive license and you may just include it into the distributive of your package. This is a huge advantage over the Visual Studio.
 
 ## Pre-requisites
