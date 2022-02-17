@@ -1,6 +1,6 @@
 // The example of the compiler usage
 
-#include "CLangScripter.h"
+#include "cppAsScript.h"
 
 int main()
 {
