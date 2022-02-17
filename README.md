@@ -36,7 +36,7 @@ public:
 3. Now make some example that uses this API. Look [test/test.cpp](test/test.cpp) as the example. This file contains functions to be executed.
 4. Use the **CLangProject** to execute functions. You need to pass the path to include files folder that contains the API reference header.
 ```cpp
-CLangProject PR;
+cppProject PR;
 std::string download = PR.checkIfCompilerInstalled();
 if(download.length()) {
 	std::cout << "LLVM-CL not installed, please download and install at:\n" << download << "\n";
