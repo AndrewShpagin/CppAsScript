@@ -12,6 +12,7 @@ You need to execute external scripts using your program API at the native c++ sp
 - The real-time compiled sources may be **debugged** if need.
 - **Very easy API creation**, you may export whole class with just a single directive. This is much more easy than API creation for any usiual scripting language. No need to call any registration functions.
 - **One-header-only library!** No external dependencies!
+- Perspective for the application to beome the **semi-opensource**, when core is hidden but the most part of functionality is open in external c++ files. They are executed at the native speed, may be debugged. Making API is so easy that opening the most part of internal API is not a problem. Migration to the new version of the application, changes of the inner structures becomes easy, old scripts and pluging will be just recompiled on the fly.
 
 ## Pre-requisites
 You need to install LLVM clang (it is relatively lightweight), not later than 12.0.1<br>
