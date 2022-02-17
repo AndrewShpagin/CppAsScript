@@ -58,4 +58,8 @@ if (f)f();
 auto f1 = PR.bind<void(int)>("test123");
 if (f1)f1(23);
 ```
+## Debugging
+First, call .debug() for the project as stated in the example above.
+You may easily debug the realtime compiled sources. Attach (for example, using Visual Studio) to the process that uses this library and runs the compiled functions. 
+Load the text of the realtime compiled script, set breakpoint somewhere there. It just works!
 
