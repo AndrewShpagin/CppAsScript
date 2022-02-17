@@ -12,7 +12,7 @@ You need to execute external scripts using your program API at the native c++ sp
 - The real-time compiled sources may be **debugged** if need.
 - **Very easy API creation**, you may export whole class with just a single directive. This is much more easy than API creation for any usiual scripting language. No need to call any registration functions.
 - **One-header-only library!** No external dependencies!
-- Perspective for the application to beome the **semi-opensource**, when core is hidden but the most part of functionality is open in external c++ files. They are executed at the native speed, may be debugged. Making API is so easy that opening the most part of internal API is not a problem. Migration to the new version of the application, changes of the inner structures becomes easy, old scripts and pluging will be just recompiled on the fly.
+- Perspective for the application to become the **semi-opensource**, when core is hidden but the most part of functionality is open in external c++ files. They are executed at the native speed, may be debugged. Making API is so easy that opening the most part of internal API is not a problem. Migration to the new version of the application, changes of the inner structures becomes easy, old scripts and pluging will be just recompiled on the fly.
 
 ## Pre-requisites
 You need to install LLVM clang (it is relatively lightweight), not later than 12.0.1<br>
@@ -36,32 +36,28 @@ public:
 3. Now make some example that uses this API. Look [test/test.cpp](test/test.cpp) as the example. This file contains functions to be executed.
 4. Use the **CLangProject** to execute functions. You need to pass the path to include files folder that contains the API reference header.
 ```cpp
-CLangProject PR;
-std::string download = PR.checkIfCompilerInstalled();
+cppProject project;
+std::string download = project.checkIfCompilerInstalled();
 if(download.length()) {
 	std::cout << "LLVM-CL not installed, please download and install at:\n" << download << "\n";
 	return 1;
 }
-/// the path to project, we walk up because thet exe placed somehere deeply
-std::filesystem::path cur = std::filesystem::current_path().parent_path().parent_path().parent_path();
+/// Set searh paths for files if they passed in relative form
+/// 3 means that we add current folder of exe file and 3 parent folders
+/// this is done because exe is usually deeply inside projects folder
+project.addSearhPath(std::filesystem::current_path(), 3);
 
-/// the path to the file to be compiled and executed
-std::filesystem::path test = cur;
-test.append("test/test.cpp");
-
-/// the path to API reference include folder
-std::filesystem::path inc = cur;
-inc.append("api_test/");
-	
-/// set project settings, pass the file to execute
-PR.addFile(test.string()).addIncludeFolder(inc.string()).debug();
+/// addFile adds the path to the file to be compiled and executed
+/// addIncludeFolder adds the path to API reference include folder
+/// debug states that debug config compiled, PDB file will be compiled as well
+project.addFile("test/test.cpp").addIncludeFolder("api_test/").debug();
 
 /// find and execute the main
-auto f = PR.bind<void()>("main");
+auto f = project.bind<void()>("main");
 if (f)f();
 
 /// find and execute the test123
-auto f1 = PR.bind<void(int)>("test123");
+auto f1 = project.bind<void(int)>("test123");
 if (f1)f1(23);
 ```
 ## Debugging
