@@ -68,6 +68,6 @@ First, call .debug() for the project as stated in the example above.
 You may easily debug the realtime compiled sources. Attach (for example, using Visual Studio) to the process that uses this library and runs the compiled functions. 
 Load the text of the realtime compiled script, set breakpoint somewhere there. It just works!
 
-## Licese
+## Licensing
 Use it as you wish for any commercial or hobby purposes. Just mention somewhere that you use this library and place the link there.
 
