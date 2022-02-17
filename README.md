@@ -2,7 +2,7 @@
 Using the compilable c++ as script, compiled at runtime using the clang-cl.<br>
 Currently it works for Windows, but it will be crossplatform in future).
 
-**This is headers-only library, just include the header "CLangScripter.h" into your project and you may use c++ as scripting language!**
+**This is one-header library, just include the header "cppAsScript.h" into your project and you may use c++ at native speed as the scripting language!**
 
 ## The problem it solves
 You need to execute external scripts using your program API at the native c++ speed. Now it is possible! Declare the API, create script example as cpp file, use this project to complile that cpp and execute at runtime. It allows to create platform-independent plugins that are amost independent on API changes instead of old DLL-s method. It opens the possibility to users of the main program to create really fast and time-critical extensions. 
@@ -12,6 +12,7 @@ You need to execute external scripts using your program API at the native c++ sp
 - The real-time compiled sources may be **debugged** if need.
 - **Very easy API creation**, you may export whole class with just a single directive. This is much more easy than API creation for any usiual scripting language. No need to call any registration functions.
 - **One-header-only library!** No external dependencies!
+- Perspective for the application to beome the **semi-opensource**, when core is hidden but the most part of functionality is open in external c++ files. They are executed at the native speed, may be debugged. Making API is so easy that opening the most part of internal API is not a problem. Migration to the new version of the application, changes of the inner structures becomes easy, old scripts and pluging will be just recompiled on the fly.
 
 ## Pre-requisites
 You need to install LLVM clang (it is relatively lightweight), not later than 12.0.1<br>
