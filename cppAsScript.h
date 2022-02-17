@@ -16,6 +16,7 @@ class cppBuilder;
 class cppProject {
 protected:
 	std::vector<std::string> files;
+	std::vector<std::filesystem::path> paths;
 	std::string modulePath;
 	std::string log;
 	std::string _options;
@@ -27,6 +28,21 @@ protected:
 public:		
 	cppProject();
 	virtual ~cppProject();
+
+
+	/**
+	 * \brief Add the path where we seek for files if the relative path passed
+	 * \param path the absolute path
+	 * \param parent_depth we add the path, then add parent path and so on, repeat this parent_depth count. It is useful if executable nested somewhere deeply into project folder
+	 */
+	void addSearhPath(const std::filesystem::path& path, int parent_depth = 0);
+
+	/**
+	 * \brief determines if path is local and tries to find the file in any folder defined previously with addSearhPath
+	 * \param path relative or absolute path 
+	 * \return the file path if the file exists, empty path othervice 
+	 */
+	std::filesystem::path findFile(const std::string& path);
 
 	/// Compile the project (if need).
 	void recompileIfNeed();
@@ -41,7 +57,7 @@ public:
 	cppProject& addIncludeFolder(const std::string& path);
 
 	/// Add the text of cpp file to be compiled into the project
-	cppProject& addSource(const char* cpp_text);
+	cppProject& addSource(const std::string& cpp_text);
 
 	/// Compile (in future) with the speed optimization
 	cppProject& speedOptimization();
@@ -60,7 +76,7 @@ public:
 
 	/// Pass the function name and get the function tat may be called later (till the project is loaded).
 	template <class F>
-	std::function<F> bind(const char* functionName);
+	std::function<F> bind(const std::string& functionName);
 
 	/// returns the compile log
 	std::string& compileLog();
@@ -79,13 +95,13 @@ public:
 };
 
 template <class F>
-std::function<F> cppProject::bind(const char* functionName) {
+std::function<F> cppProject::bind(const std::string& functionName) {
 	std::function<F> f1 = nullptr;
 	if (!ref) {
 		recompileIfNeed();
 	}
 	if (ref) {
-		f1 = static_cast<F*>(ref->raw_ptr(functionName));
+		f1 = static_cast<F*>(ref->raw_ptr(functionName.c_str()));
 	}
 	return f1;
 }
@@ -288,6 +304,28 @@ inline cppProject::~cppProject() {
 	ref = nullptr;
 }
 
+inline void cppProject::addSearhPath(const std::filesystem::path& path, int parent_depth) {
+	paths.push_back(path);
+	if(parent_depth && path.has_parent_path()) {
+		addSearhPath(path.parent_path(), parent_depth - 1);
+	}
+}
+
+inline std::filesystem::path cppProject::findFile(const std::string& path) {
+	std::filesystem::path p = path;
+	if(p.is_absolute()) {
+		if (exists(p))return p;
+	} else {
+		for(auto p:paths) {
+			auto pt = p;
+			pt.append(path);
+			if (exists(pt))return pt;
+		}
+	}
+	p.clear();
+	return p;
+}
+
 inline bool cppProject::valid() {
 	return ref != nullptr;
 }
@@ -313,16 +351,18 @@ inline std::string& cppProject::includes() {
 }
 
 inline cppProject& cppProject::addFile(const std::string& path) {
-	filesList().push_back(path);
+	auto fpath = findFile(path);
+	if (!is_empty(fpath))filesList().push_back(fpath.string());
 	return *this;
 }
 
 inline cppProject& cppProject::addIncludeFolder(const std::string& path) {
-	includes() += " /I " + path;
+	auto fpath = findFile(path);
+	if(exists(fpath)) includes() += std::string(" /I ") + "\"" + path + "\"";
 	return *this;
 }
 
-inline cppProject& cppProject::addSource(const char* cpp_text) {
+inline cppProject& cppProject::addSource(const std::string& cpp_text) {
 	std::string fn = "temp_" + md5::hash(cpp_text) + ".cpp";
 	std::string res = builder->pathInHeap(fn);
 	std::ofstream f(res);

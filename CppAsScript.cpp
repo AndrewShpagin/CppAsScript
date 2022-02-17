@@ -4,32 +4,28 @@
 
 int main()
 {
-	cppProject PR;
-	std::string download = PR.checkIfCompilerInstalled();
+	cppProject project;
+	std::string download = project.checkIfCompilerInstalled();
 	if(download.length()) {
 		std::cout << "LLVM-CL not installed, please download and install at:\n" << download << "\n";
 		return 1;
 	}
-	/// the path to project, we walk up because thet exe placed somehere deeply
-	std::filesystem::path cur = std::filesystem::current_path().parent_path().parent_path().parent_path();
+	/// Set searh paths for files if they passed in relative form
+	///	3 means that we add current folder of exe file and 3 parent folders
+	///	this is done because exe is usually deeply inside projects folder
+	project.addSearhPath(std::filesystem::current_path(), 3);
 
-	/// the path to the file to be compiled and executed
-	std::filesystem::path test = cur;
-	test.append("test/test.cpp");
-
-	/// the path to API reference include folder
-	std::filesystem::path inc = cur;
-	inc.append("api_test/");
-
-	/// set project settings, pass the file to execute
-	PR.addFile(test.string()).addIncludeFolder(inc.string()).debug();
+	/// addFile adds the path to the file to be compiled and executed
+	///	addIncludeFolder adds the path to API reference include folder
+	///	debug states that debug config compiled, PDB file will be compiled as well
+	project.addFile("test/test.cpp").addIncludeFolder("api_test/").debug();
 
 	/// find and execute the main
-	auto f = PR.bind<void()>("main");
+	auto f = project.bind<void()>("main");
 	if (f)f();
 
 	/// find and execute the test123
-	auto f1 = PR.bind<void(int)>("test123");
+	auto f1 = project.bind<void(int)>("test123");
 	if (f1)f1(23);
 
 	return 0;
