@@ -15,12 +15,12 @@ static std::string _replace(const std::string& str, const std::string& sub, cons
 void CLangProject::_add(const std::string& opt) {
 	_remove(opt);
 	_options += " " + opt;
-	_replace(_options, "  ", " ");
+	_options = _replace(_options, "  ", " ");
 }
 
 void CLangProject::_remove(const std::string& opt) {
-	_replace(_options, opt, "");
-	_replace(_options, "  ", " ");
+	_options = _replace(_options, opt, "");
+	_options = _replace(_options, "  ", " ");
 }
 
 CLangProject::CLangProject() {
@@ -95,6 +95,7 @@ CLangProject& CLangProject::sizeOptimization() {
 CLangProject& CLangProject::debug() {
 	_remove("/LD");
 	_add("/LDd");
+	_add("-fuse-ld=lld -Z7");
 	return *this;
 }
 

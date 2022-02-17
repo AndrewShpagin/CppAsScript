@@ -178,12 +178,13 @@ public:
 		if (!std::filesystem::exists(project.module())) {
 #ifdef _WIN64
 			opt += " -m64";
-#endif
+#endif			
 			opt += " /D APICALL=\"__declspec(dllimport)\" ";
 			opt += "/D EXPORT=\"extern \\\"C\\\" __declspec(dllexport)\" ";
 			opt += project.includes();
 			opt += " " + project.options() + " -o \"" + project.module() + "\" ";
 			project.compileLog() = exec(opt.c_str());
+			// std::cout << opt << "\n";
 			std::cout << "Compilation result: " << project.compileLog() << "\n";
 		} else {
 			std::cout << "The compiled module is up to date.\n";
