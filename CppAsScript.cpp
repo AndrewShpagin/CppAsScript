@@ -4,7 +4,7 @@
 
 int main()
 {
-	CLangProject PR;
+	cppProject PR;
 	std::string download = PR.checkIfCompilerInstalled();
 	if(download.length()) {
 		std::cout << "LLVM-CL not installed, please download and install at:\n" << download << "\n";

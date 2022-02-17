@@ -9,56 +9,24 @@
 #include <cstdio>
 #include <functional>
 
-class LibReference {
-public:
-	virtual ~LibReference() {};
-	virtual bool valid() const = 0;
-	virtual bool loadModule(const char* path) = 0;
-	virtual void unLoadModule() = 0;
-	virtual void* raw_ptr(const char* functionName) = 0;
-	static LibReference* create();
-};
 
-class CLangProject;
+class cppModule;
+class cppBuilder;
 
-class CLangBuilder {
-	friend class CLangProject;
-public:
-	
-	virtual ~CLangBuilder() {};
-
-	/// returns the module extension (dll for windows)
-	virtual const char* getModuleExtension() const = 0;
-
-	/// compile the project
-	virtual void compile(CLangProject& project) = 0;
-
-	/// converts relative path to file to the full path
-	virtual std::string pathInHeap(const std::string& relative) = 0;
-
-	/// returns LLVM-CL download path for the current OS
-	virtual std::string downloadPath() = 0;
-
-	/// returns true if the LLVM-CL exists in system and available to be used
-	virtual bool valid() = 0;
-	
-	static CLangBuilder* create();
-};
-
-class CLangProject {
+class cppProject {
 protected:
 	std::vector<std::string> files;
 	std::string modulePath;
 	std::string log;
 	std::string _options;
 	std::string _includes;
-	LibReference* ref;
-	CLangBuilder* builder;
+	cppModule* ref;
+	cppBuilder* builder;
 	void _add(const std::string& opt);
 	void _remove(const std::string& opt);
 public:		
-	CLangProject();
-	virtual ~CLangProject();
+	cppProject();
+	virtual ~cppProject();
 
 	/// Compile the project (if need).
 	void recompileIfNeed();
@@ -67,25 +35,25 @@ public:
 	bool valid();
 
  	/// Add the cpp file into the project, provide the full path
-	CLangProject& addFile(const std::string& path);
+	cppProject& addFile(const std::string& path);
 
 	/// Add the include file into the project
-	CLangProject& addIncludeFolder(const std::string& path);
+	cppProject& addIncludeFolder(const std::string& path);
 
 	/// Add the text of cpp file to be compiled into the project
-	CLangProject& addSource(const char* cpp_text);
+	cppProject& addSource(const char* cpp_text);
 
 	/// Compile (in future) with the speed optimization
-	CLangProject& speedOptimization();
+	cppProject& speedOptimization();
 
 	/// Compile (in future) with the size optimization
-	CLangProject& sizeOptimization();
+	cppProject& sizeOptimization();
 
 	/// Compile debug version (this is just option setting, not compilation itself)
-	CLangProject& debug();
+	cppProject& debug();
 
 	/// Compile release version (this is just option setting, not compilation itself)
-	CLangProject& release();
+	cppProject& release();
 
 	/// Returns "" if the LLVM-CL installed correctly, othervice it returns the path to download, you may display the message to offer the download.
 	std::string checkIfCompilerInstalled();
@@ -111,7 +79,7 @@ public:
 };
 
 template <class F>
-std::function<F> CLangProject::bind(const char* functionName) {
+std::function<F> cppProject::bind(const char* functionName) {
 	std::function<F> f1 = nullptr;
 	if (!ref) {
 		recompileIfNeed();
@@ -121,6 +89,40 @@ std::function<F> CLangProject::bind(const char* functionName) {
 	}
 	return f1;
 }
+
+class cppModule {
+public:
+	virtual ~cppModule() {};
+	virtual bool valid() const = 0;
+	virtual bool loadModule(const char* path) = 0;
+	virtual void unLoadModule() = 0;
+	virtual void* raw_ptr(const char* functionName) = 0;
+	static cppModule* create();
+};
+
+class cppBuilder {
+	friend class cppProject;
+public:
+
+	virtual ~cppBuilder() {};
+
+	/// returns the module extension (dll for windows)
+	virtual const char* getModuleExtension() const = 0;
+
+	/// compile the project
+	virtual void compile(cppProject& project) = 0;
+
+	/// converts relative path to file to the full path
+	virtual std::string pathInHeap(const std::string& relative) = 0;
+
+	/// returns LLVM-CL download path for the current OS
+	virtual std::string downloadPath() = 0;
+
+	/// returns true if the LLVM-CL exists in system and available to be used
+	virtual bool valid() = 0;
+
+	static cppBuilder* create();
+};
 
 
 /// implementation
@@ -262,65 +264,65 @@ inline static std::string _replace(const std::string& str, const std::string& su
 	return tmp;
 }
 
-inline void CLangProject::_add(const std::string& opt) {
+inline void cppProject::_add(const std::string& opt) {
 	_remove(opt);
 	_options += " " + opt;
 	_options = _replace(_options, "  ", " ");
 }
 
-inline void CLangProject::_remove(const std::string& opt) {
+inline void cppProject::_remove(const std::string& opt) {
 	_options = _replace(_options, opt, "");
 	_options = _replace(_options, "  ", " ");
 }
 
-inline CLangProject::CLangProject() {
-	builder = CLangBuilder::create();
+inline cppProject::cppProject() {
+	builder = cppBuilder::create();
 	ref = nullptr;
 	_options = "/std:c++latest /LD";
 }
 
-inline CLangProject::~CLangProject() {
+inline cppProject::~cppProject() {
 	if (builder)delete(builder);
 	builder = nullptr;
 	if (ref)delete(ref);
 	ref = nullptr;
 }
 
-inline bool CLangProject::valid() {
+inline bool cppProject::valid() {
 	return ref != nullptr;
 }
 
-inline std::string& CLangProject::compileLog() {
+inline std::string& cppProject::compileLog() {
 	return log;
 }
 
-inline std::string& CLangProject::module() {
+inline std::string& cppProject::module() {
 	return modulePath;
 }
 
-inline std::vector<std::string>& CLangProject::filesList() {
+inline std::vector<std::string>& cppProject::filesList() {
 	return files;
 }
 
-inline std::string& CLangProject::options() {
+inline std::string& cppProject::options() {
 	return _options;
 }
 
-inline std::string& CLangProject::includes() {
+inline std::string& cppProject::includes() {
 	return _includes;
 }
 
-inline CLangProject& CLangProject::addFile(const std::string& path) {
+inline cppProject& cppProject::addFile(const std::string& path) {
 	filesList().push_back(path);
 	return *this;
 }
 
-inline CLangProject& CLangProject::addIncludeFolder(const std::string& path) {
+inline cppProject& cppProject::addIncludeFolder(const std::string& path) {
 	includes() += " /I " + path;
 	return *this;
 }
 
-inline CLangProject& CLangProject::addSource(const char* cpp_text) {
+inline cppProject& cppProject::addSource(const char* cpp_text) {
 	std::string fn = "temp_" + md5::hash(cpp_text) + ".cpp";
 	std::string res = builder->pathInHeap(fn);
 	std::ofstream f(res);
@@ -332,30 +334,30 @@ inline CLangProject& CLangProject::addSource(const char* cpp_text) {
 	return *this;
 }
 
-inline CLangProject& CLangProject::speedOptimization() {
+inline cppProject& cppProject::speedOptimization() {
 	_add("/Ot");
 	return *this;
 }
 
-inline CLangProject& CLangProject::sizeOptimization() {
+inline cppProject& cppProject::sizeOptimization() {
 	_add("/Os");
 	return *this;
 }
 
-inline CLangProject& CLangProject::debug() {
+inline cppProject& cppProject::debug() {
 	_remove("/LD");
 	_add("/LDd");
 	_add("-fuse-ld=lld -Z7");
 	return *this;
 }
 
-inline CLangProject& CLangProject::release() {
+inline cppProject& cppProject::release() {
 	_remove("/LDd");
 	_add("/LD");
 	return *this;
 }
 
-inline std::string CLangProject::checkIfCompilerInstalled() {
+inline std::string cppProject::checkIfCompilerInstalled() {
 	if (builder) {
 		if (!builder->valid()) {
 			return builder->downloadPath();
@@ -364,11 +366,11 @@ inline std::string CLangProject::checkIfCompilerInstalled() {
 	return "";
 }
 
-inline void CLangProject::recompileIfNeed() {
+inline void cppProject::recompileIfNeed() {
 	if (builder) {
 		builder->compile(*this);
 		if (ref)delete(ref);
-		ref = LibReference::create();
+		ref = cppModule::create();
 		ref->loadModule(module().c_str());
 	}
 }
@@ -398,7 +400,7 @@ struct funcRef {
 	FARPROC address;
 };
 
-class LibReferenceWin : public LibReference {
+class LibReferenceWin : public cppModule {
 	HMODULE h;
 	std::vector<funcRef> refs;
 public:
@@ -507,7 +509,7 @@ inline std::string exec(const char* cmd) {
 	return strResult;
 }
 
-class CLangBuilderWin : public CLangBuilder {
+class CLangBuilderWin : public cppBuilder {
 	std::string clangPath;
 	std::string tempPath;
 public:
@@ -532,7 +534,7 @@ public:
 	const char* getModuleExtension() const override {
 		return "dll";
 	}
-	void compile(CLangProject& project) override {
+	void compile(cppProject& project) override {
 		std::filesystem::path p = _getexepath();
 		p.replace_extension("lib");
 		std::string libpath = p.string();
@@ -581,11 +583,11 @@ public:
 	}
 };
 
-inline LibReference* LibReference::create() {
+inline cppModule* cppModule::create() {
 	return new LibReferenceWin;
 }
 
-inline CLangBuilder* CLangBuilder::create() {
+inline cppBuilder* cppBuilder::create() {
 	return new CLangBuilderWin;
 }
 
